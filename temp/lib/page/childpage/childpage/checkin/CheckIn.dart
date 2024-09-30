@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:langsisiswn/common/lock_psw.dart';
+import 'package:langsisiswn/page/childpage/childpage/checkin/CheckinX/Checkin_other_expenses.dart';
 import 'dart:math';
 
 import 'package:provider/provider.dart';
@@ -47,7 +48,7 @@ class _CheckInState extends State<CheckIn> {
               buildDropdownField('证件类型', ['身份证', '护照'], '身份证'),
               buildInputField('证件号', '请输入'),
               buildMoreInfoField('更多信息', '其他个人信息'),
-              buildAddField('同住人', '添加同住人'),
+              buildAddField('同住人', '添加同住人',other_expenses),
               Divider(),
               // Contract dates
               buildDateField('开始时间', selectedStartDate),
@@ -99,7 +100,7 @@ class _CheckInState extends State<CheckIn> {
               // Payment info
               buildInputField('租金', '元/月'),
               buildInputField('押金', '元'),
-              buildAddField('其他费用', '添加其他费用'),
+              buildAddField('其他费用', '添加其他费用',other_expenses),
               Divider(),
               buildInputField('水费', '0.00 元/吨'),
               buildInputField('电费', '0.00 元/度'),
@@ -150,7 +151,15 @@ class _CheckInState extends State<CheckIn> {
       ),
     );
   }
-
+  void  other_expenses() async {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) =>
+            CheckInOtherExpenses(),
+      ),
+    );
+  }
   Widget buildDateField(String label, DateTime date) {
     return ListTile(
       title: Text(label),
@@ -218,11 +227,13 @@ class _CheckInState extends State<CheckIn> {
     );
   }
 
-  Widget buildAddField(String label, String buttonText) {
+  Widget buildAddField(String label, String buttonText,void fun()) {
     return ListTile(
       title: Text(label),
       trailing: TextButton(
-        onPressed: () {},
+        onPressed: () {
+          fun();
+        },
         child: Text(buttonText),
       ),
     );
