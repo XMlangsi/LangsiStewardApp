@@ -22,8 +22,8 @@ class _CheckInOtherExpensesState extends State<CheckInOtherExpenses> {
 
   final List<String> feeTypes = ['押金', '费用'];
   final Map<String, List<String>> subTypes = {
-    '押金': ['钥匙押金', '门卡押金'],
-    '费用': ['水费', '电费', '网费'],
+    '押金': [],
+    '费用': [],
   };
 
   final TextEditingController amountController = TextEditingController();
@@ -49,17 +49,34 @@ class _CheckInOtherExpensesState extends State<CheckInOtherExpenses> {
     }
   }
   Future<void> selfylist() async {
-    Dio dio = new Dio();
-    final urlModel = Provider.of<Internet_msg>(context, listen: false); //获取url
+    Dio dio = Dio();
+    final urlModel = Provider.of<Internet_msg>(context, listen: false);
     FormData formData = FormData.fromMap({
-      "otherid":"IB_fylx",
+      "otherid": "IB_fylx",
     });
     String url = "${urlModel.url}/ebasicOther/getebasicOther";
-    Response response = await dio
-        .post(url, data: formData);
-    var result = response.data;
-    print(result);
+
+    try {
+      Response response = await dio.post(url, data: formData);
+      var result = response.data;
+
+      if (result is List) {
+        for (var item in result) {
+          // 确保 item 是 Map 类型并提取 othername
+          if (item is Map<String, dynamic> && item.containsKey("othername")) {
+            if (item["othername"].toString().contains("押金")) {
+              subTypes["押金"]?.add(item["othername"].toString());
+            } else {
+              subTypes["费用"]?.add(item["othername"].toString());
+            }
+          }
+        }
+      }
+    } catch (e) {
+      print('请求失败: $e');
+    }
   }
+
   @override
   void initState() {
     selfylist();
